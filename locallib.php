@@ -66,7 +66,7 @@ function resource_display_embed($resource, $cm, $course, $file) {
     $clicktoopen = resource_get_clicktoopen($file, $resource->revision);
 
     $context = context_module::instance($cm->id);
-    $path = '/'.$context->id.'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$context->id.'/mod_resourceduedate/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
     $moodleurl = new moodle_url('/pluginfile.php' . $path);
 
@@ -132,7 +132,7 @@ function resource_display_frame($resource, $cm, $course, $file) {
     } else {
         $config = get_config('resource');
         $context = context_module::instance($cm->id);
-        $path = '/'.$context->id.'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+        $path = '/'.$context->id.'/mod_resource_date/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
         $fileurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
         $navurl = "$CFG->wwwroot/mod/resource/view.php?id=$cm->id&amp;frameset=top";
         $title = strip_tags(format_string($course->shortname.': '.$resource->name));
@@ -168,7 +168,7 @@ function resource_get_clicktoopen($file, $revision, $extra='') {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resource/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_resource_date/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
 
     $string = get_string('clicktoopen2', 'resource', "<a href=\"$fullurl\" $extra>$filename</a>");
@@ -183,7 +183,7 @@ function resource_get_clicktodownload($file, $revision) {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resource/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_resource_date/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, true);
 
     $string = get_string('clicktodownload', 'resource', "<a href=\"$fullurl\">$filename</a>");
@@ -457,12 +457,12 @@ function resource_set_mainfile($data) {
 
     $context = context_module::instance($cmid);
     if ($draftitemid) {
-        file_save_draft_area_files($draftitemid, $context->id, 'mod_resource', 'content', 0, array('subdirs'=>true));
+        file_save_draft_area_files($draftitemid, $context->id, 'mod_resourceduedate', 'content', 0, array('subdirs'=>true));
     }
-    $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder', false);
+    $files = $fs->get_area_files($context->id, 'mod_resourceduedate', 'content', 0, 'sortorder', false);
     if (count($files) == 1) {
         // only one file attached, set it as main file automatically
         $file = reset($files);
-        file_set_sortorder($context->id, 'mod_resource', 'content', 0, $file->get_filepath(), $file->get_filename(), 1);
+        file_set_sortorder($context->id, 'mod_resourceduedate', 'content', 0, $file->get_filepath(), $file->get_filename(), 1);
     }
 }

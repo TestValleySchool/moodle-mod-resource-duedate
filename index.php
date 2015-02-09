@@ -35,25 +35,25 @@ $PAGE->set_pagelayout('incourse');
 $params = array(
     'context' => context_course::instance($course->id)
 );
-$event = \mod_resource_duedate\event\course_module_instance_list_viewed::create($params);
+$event = \mod_resourceduedate\event\course_module_instance_list_viewed::create($params);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 
-$strresource     = get_string('modulename', 'resource');
-$strresources    = get_string('modulenameplural', 'resource');
+$strresource     = get_string('modulename', 'resourceduedate');
+$strresources    = get_string('modulenameplural', 'resourceduedate');
 $strsectionname  = get_string('sectionname', 'format_'.$course->format);
 $strname         = get_string('name');
 $strintro        = get_string('moduleintro');
 $strlastmodified = get_string('lastmodified');
 
-$PAGE->set_url('/mod/resource_duedate/index.php', array('id' => $course->id));
+$PAGE->set_url('/mod/resourceduedate/index.php', array('id' => $course->id));
 $PAGE->set_title($course->shortname.': '.$strresources);
 $PAGE->set_heading($course->fullname);
 $PAGE->navbar->add($strresources);
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strresources);
 
-if (!$resources = get_all_instances_in_course('resource_duedate', $course)) {
+if (!$resources = get_all_instances_in_course('resourceduedate', $course)) {
     notice(get_string('thereareno', 'moodle', $strresources), "$CFG->wwwroot/course/view.php?id=$course->id");
     exit;
 }

@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die;
 
 $capabilities = array(
-    'mod/resource:view' => array(
+    'mod/resource_duedate:view' => array(
         'captype' => 'read',
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
@@ -34,7 +34,7 @@ $capabilities = array(
         )
     ),
 
-    'mod/resource:addinstance' => array(
+    'mod/resource_duedate:addinstance' => array(
         'riskbitmask' => RISK_XSS,
 
         'captype' => 'write',

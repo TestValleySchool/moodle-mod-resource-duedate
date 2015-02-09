@@ -27,8 +27,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'resource', 'action'=>'view', 'mtable'=>'resource', 'field'=>'name'),
-    array('module'=>'resource', 'action'=>'view all', 'mtable'=>'resource', 'field'=>'name'),
-    array('module'=>'resource', 'action'=>'update', 'mtable'=>'resource', 'field'=>'name'),
-    array('module'=>'resource', 'action'=>'add', 'mtable'=>'resource', 'field'=>'name'),
+    array('module'=>'resourceduedate', 'action'=>'view', 'mtable'=>'resourceduedate', 'field'=>'name'),
+    array('module'=>'resourceduedate', 'action'=>'view all', 'mtable'=>'resourceduedate', 'field'=>'name'),
+    array('module'=>'resourceduedate', 'action'=>'update', 'mtable'=>'resourceduedate', 'field'=>'name'),
+    array('module'=>'resourceduedate', 'action'=>'add', 'mtable'=>'resourceduedate', 'field'=>'name'),
 );

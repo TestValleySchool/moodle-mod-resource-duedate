@@ -63,23 +63,15 @@ $string['framesize'] = 'Frame height';
 $string['legacyfiles'] = 'Migration of old course file';
 $string['legacyfilesactive'] = 'Active';
 $string['legacyfilesdone'] = 'Finished';
-$string['modulename'] = 'File';
-$string['modulename_help'] = 'The file module enables a teacher to provide a file as a course resource. Where possible, the file will be displayed within the course interface; otherwise students will be prompted to download it. The file may include supporting files, for example an HTML page may have embedded images or Flash objects.
-
-Note that students need to have the appropriate software on their computers in order to open the file.
-
-A file may be used
-
-* To share presentations given in class
-* To include a mini website as a course resource
-* To provide draft files of certain software programs (eg Photoshop .psd) so students can edit and submit them for assessment';
-$string['modulename_link'] = 'mod/resource/view';
-$string['modulenameplural'] = 'Files';
+$string['modulename'] = 'HLT';
+$string['modulename_help'] = 'New module goodness!';
+$string['modulename_link'] = 'mod/resourceduedate/view';
+$string['modulenameplural'] = 'HLT Files';
 $string['notmigrated'] = 'This legacy resource type ({$a}) was not yet migrated, sorry.';
 $string['optionsheader'] = 'Display options';
 $string['page-mod-resource-x'] = 'Any file module page';
 $string['pluginadministration'] = 'File module administration';
-$string['pluginname'] = 'File';
+$string['pluginname'] = 'HLT';
 $string['popupheight'] = 'Pop-up height (in pixels)';
 $string['popupheightexplain'] = 'Specifies default height of popup windows.';
 $string['popupresource'] = 'This resource should appear in a popup window.';
