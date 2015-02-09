@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/resource/locallib.php');
 require_once($CFG->libdir.'/filelib.php');
 
-class mod_resource_mod_form extends moodleform_mod {
+class mod_resource_duedate_mod_form extends moodleform_mod {
     function definition() {
         global $CFG, $DB;
         $mform =& $this->_form;
