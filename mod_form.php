@@ -67,6 +67,8 @@ class mod_resourceduedate_mod_form extends moodleform_mod {
         $filemanager_options['maxfiles'] = -1;
         $filemanager_options['mainfile'] = true;
 
+	$mform->addElement('date_selector', 'duedate', 'Due date', array('optional'=>false));
+
         $mform->addElement('filemanager', 'files', get_string('selectfiles'), null, $filemanager_options);
 
         // add legacy files flag only if used
