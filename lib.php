@@ -23,12 +23,15 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+
+require_once( dirname( __FILE__ ) . '/locallib.php' );
+
 /**
  * List of features supported in Resource module
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed True if module supports feature, false if not, null if doesn't know
  */
-function resource_supports($feature) {
+function resourceduedate_supports($feature) {
     switch($feature) {
         case FEATURE_MOD_ARCHETYPE:           return MOD_ARCHETYPE_RESOURCE;
         case FEATURE_GROUPS:                  return false;
@@ -48,7 +51,7 @@ function resource_supports($feature) {
  * Returns all other caps used in module
  * @return array
  */
-function resource_get_extra_capabilities() {
+function resourceduedate_get_extra_capabilities() {
     return array('moodle/site:accessallgroups');
 }
 
@@ -57,7 +60,7 @@ function resource_get_extra_capabilities() {
  * @param $data the data submitted from the reset course.
  * @return array status array
  */
-function resource_reset_userdata($data) {
+function resourceduedate_reset_userdata($data) {
     return array();
 }
 
@@ -71,7 +74,7 @@ function resource_reset_userdata($data) {
  *
  * @return array
  */
-function resource_get_view_actions() {
+function resourceduedate_get_view_actions() {
     return array('view','view all');
 }
 
@@ -85,7 +88,7 @@ function resource_get_view_actions() {
  *
  * @return array
  */
-function resource_get_post_actions() {
+function resourceduedate_get_post_actions() {
     return array('update', 'add');
 }
 
@@ -95,20 +98,20 @@ function resource_get_post_actions() {
  * @param object $mform
  * @return int new resource instance id
  */
-function resource_add_instance($data, $mform) {
+function resourceduedate_add_instance($data, $mform) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
-    require_once("$CFG->dirroot/mod/resource/locallib.php");
+    require_once("$CFG->dirroot/mod/resourceduedate/locallib.php");
     $cmid = $data->coursemodule;
     $data->timemodified = time();
 
-    resource_set_display_options($data);
+    resourceduedate_set_display_options($data);
 
-    $data->id = $DB->insert_record('resource', $data);
+    $data->id = $DB->insert_record('resourceduedate', $data);
 
     // we need to use context now, so we need to make sure all needed info is already in db
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
-    resource_set_mainfile($data);
+    resourceduedate_set_mainfile($data);
     return $data->id;
 }
 
@@ -118,28 +121,28 @@ function resource_add_instance($data, $mform) {
  * @param object $mform
  * @return bool true
  */
-function resource_update_instance($data, $mform) {
+function resourceduedate_update_instance($data, $mform) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
     $data->timemodified = time();
     $data->id           = $data->instance;
     $data->revision++;
 
-    resource_set_display_options($data);
+    resourceduedate_set_display_options($data);
 
-    $DB->update_record('resource', $data);
-    resource_set_mainfile($data);
+    $DB->update_record('resourceduedate', $data);
+    resourceduedate_set_mainfile($data);
     return true;
 }
 
 /**
  * Updates display options based on form input.
  *
- * Shared code used by resource_add_instance and resource_update_instance.
+ * Shared code used by resourceduedate_add_instance and resourceduedate_update_instance.
  *
  * @param object $data Data object
  */
-function resource_set_display_options($data) {
+function resourceduedate_set_display_options($data) {
     $displayoptions = array();
     if ($data->display == RESOURCELIB_DISPLAY_POPUP) {
         $displayoptions['popupwidth']  = $data->popupwidth;
@@ -162,16 +165,16 @@ function resource_set_display_options($data) {
  * @param int $id
  * @return bool true
  */
-function resource_delete_instance($id) {
+function resourceduedate_delete_instance($id) {
     global $DB;
 
-    if (!$resource = $DB->get_record('resource', array('id'=>$id))) {
+    if (!$resource = $DB->get_record('resourceduedate', array('id'=>$id))) {
         return false;
     }
 
     // note: all context files are deleted automatically
 
-    $DB->delete_records('resource', array('id'=>$resource->id));
+    $DB->delete_records('resourceduedate', array('id'=>$resource->id));
 
     return true;
 }
@@ -186,7 +189,7 @@ function resource_delete_instance($id) {
  * @param stdClass $coursemodule
  * @return cached_cm_info info
  */
-function resource_get_coursemodule_info($coursemodule) {
+function resourceduedate_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
     require_once("$CFG->libdir/filelib.php");
     require_once("$CFG->dirroot/mod/resource/locallib.php");
@@ -194,7 +197,7 @@ function resource_get_coursemodule_info($coursemodule) {
 
     $context = context_module::instance($coursemodule->id);
 
-    if (!$resource = $DB->get_record('resource', array('id'=>$coursemodule->instance),
+    if (!$resource = $DB->get_record('resourceduedate', array('id'=>$coursemodule->instance),
             'id, name, display, displayoptions, tobemigrated, revision, intro, introformat')) {
         return NULL;
     }
@@ -218,7 +221,7 @@ function resource_get_coursemodule_info($coursemodule) {
         $resource->mainfile = $mainfile->get_filename();
     }
 
-    $display = resource_get_final_display_type($resource);
+    $display = resourceduedate_get_final_display_type($resource);
 
     if ($display == RESOURCELIB_DISPLAY_POPUP) {
         $fullurl = "$CFG->wwwroot/mod/resource/view.php?id=$coursemodule->id&amp;redirect=1";
@@ -235,7 +238,7 @@ function resource_get_coursemodule_info($coursemodule) {
     }
 
     // If any optional extra details are turned on, store in custom data
-    $info->customdata = resource_get_optional_details($resource, $coursemodule);
+    $info->customdata = resourceduedate_get_optional_details($resource, $coursemodule);
 
     return $info;
 }
@@ -246,7 +249,7 @@ function resource_get_coursemodule_info($coursemodule) {
  *
  * @param cm_info $cm Course module information
  */
-function resource_cm_info_view(cm_info $cm) {
+function resourceduedate_cm_info_view(cm_info $cm) {
     $details = $cm->customdata;
     if ($details) {
         $cm->set_after_link(' ' . html_writer::tag('span', $details,
@@ -264,7 +267,7 @@ function resource_cm_info_view(cm_info $cm) {
  * @param stdClass $context context object
  * @return array
  */
-function resource_get_file_areas($course, $cm, $context) {
+function resourceduedate_get_file_areas($course, $cm, $context) {
     $areas = array();
     $areas['content'] = get_string('resourcecontent', 'resource');
     return $areas;
@@ -286,7 +289,7 @@ function resource_get_file_areas($course, $cm, $context) {
  * @param string $filename file name
  * @return file_info instance or null if not found
  */
-function resource_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+function resourceduedate_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     global $CFG;
 
     if (!has_capability('moodle/course:managefiles', $context)) {
@@ -310,10 +313,10 @@ function resource_get_file_info($browser, $areas, $course, $cm, $context, $filea
             }
         }
         require_once("$CFG->dirroot/mod/resource/locallib.php");
-        return new resource_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
+        return new resourceduedate_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
     }
 
-    // note: resource_intro handled in file_browser automatically
+    // note: resourceduedate_intro handled in file_browser automatically
 
     return null;
 }
@@ -332,7 +335,7 @@ function resource_get_file_info($browser, $areas, $course, $cm, $context, $filea
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - just send the file
  */
-function resource_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function resourceduedate_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
@@ -354,7 +357,7 @@ function resource_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
 
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
-    $fullpath = rtrim("/$context->id/mod_resource/$filearea/0/$relativepath", '/');
+    $fullpath = rtrim("/$context->id/mod_resourceduedate/$filearea/0/$relativepath", '/');
     do {
         if (!$file = $fs->get_file_by_hash(sha1($fullpath))) {
             if ($fs->get_file_by_hash(sha1("$fullpath/."))) {
@@ -368,7 +371,7 @@ function resource_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
                     break;
                 }
             }
-            $resource = $DB->get_record('resource', array('id'=>$cm->instance), 'id, legacyfiles', MUST_EXIST);
+            $resource = $DB->get_record('resourceduedate', array('id'=>$cm->instance), 'id, legacyfiles', MUST_EXIST);
             if ($resource->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
                 return false;
             }
@@ -377,14 +380,14 @@ function resource_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
             }
             // file migrate - update flag
             $resource->legacyfileslast = time();
-            $DB->update_record('resource', $resource);
+            $DB->update_record('resourceduedate', $resource);
         }
     } while (false);
 
     // should we apply filters?
     $mimetype = $file->get_mimetype();
     if ($mimetype === 'text/html' or $mimetype === 'text/plain') {
-        $filter = $DB->get_field('resource', 'filterfiles', array('id'=>$cm->instance));
+        $filter = $DB->get_field('resourceduedate', 'filterfiles', array('id'=>$cm->instance));
         $CFG->embeddedsoforcelinktarget = true;
     } else {
         $filter = 0;
@@ -400,8 +403,8 @@ function resource_pluginfile($course, $cm, $context, $filearea, $args, $forcedow
  * @param stdClass $parentcontext Block's parent context
  * @param stdClass $currentcontext Current context of block
  */
-function resource_page_type_list($pagetype, $parentcontext, $currentcontext) {
-    $module_pagetype = array('mod-resource-*'=>get_string('page-mod-resource-x', 'resource'));
+function resourceduedate_page_type_list($pagetype, $parentcontext, $currentcontext) {
+    $module_pagetype = array('mod-resourceduedate-*'=>get_string('page-mod-resourceduedate-x', 'resource'));
     return $module_pagetype;
 }
 
@@ -410,14 +413,14 @@ function resource_page_type_list($pagetype, $parentcontext, $currentcontext) {
  *
  * @return array of file content
  */
-function resource_export_contents($cm, $baseurl) {
+function resourceduedate_export_contents($cm, $baseurl) {
     global $CFG, $DB;
     $contents = array();
     $context = context_module::instance($cm->id);
-    $resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $resource = $DB->get_record('resourceduedate', array('id'=>$cm->instance), '*', MUST_EXIST);
 
     $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
+    $files = $fs->get_area_files($context->id, 'mod_resourceduedate', 'content', 0, 'sortorder DESC, id ASC', false);
 
     foreach ($files as $fileinfo) {
         $file = array();
@@ -425,7 +428,7 @@ function resource_export_contents($cm, $baseurl) {
         $file['filename']     = $fileinfo->get_filename();
         $file['filepath']     = $fileinfo->get_filepath();
         $file['filesize']     = $fileinfo->get_filesize();
-        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_resource/content/'.$resource->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
+        $file['fileurl']      = file_encode_url("$CFG->wwwroot/" . $baseurl, '/'.$context->id.'/mod_resourceduedate/content/'.$resource->revision.$fileinfo->get_filepath().$fileinfo->get_filename(), true);
         $file['timecreated']  = $fileinfo->get_timecreated();
         $file['timemodified'] = $fileinfo->get_timemodified();
         $file['sortorder']    = $fileinfo->get_sortorder();
@@ -442,9 +445,9 @@ function resource_export_contents($cm, $baseurl) {
  * Register the ability to handle drag and drop file uploads
  * @return array containing details of the files / types the mod can handle
  */
-function resource_dndupload_register() {
+function resourceduedate_dndupload_register() {
     return array('files' => array(
-                     array('extension' => '*', 'message' => get_string('dnduploadresource', 'mod_resource'))
+                     array('extension' => '*', 'message' => get_string('dnduploadresource', 'mod_resourceduedate'))
                  ));
 }
 
@@ -453,7 +456,7 @@ function resource_dndupload_register() {
  * @param object $uploadinfo details of the file / content that has been uploaded
  * @return int instance id of the newly created mod
  */
-function resource_dndupload_handle($uploadinfo) {
+function resourceduedate_dndupload_handle($uploadinfo) {
     // Gather the required info.
     $data = new stdClass();
     $data->course = $uploadinfo->course->id;
@@ -473,5 +476,5 @@ function resource_dndupload_handle($uploadinfo) {
     $data->showtype = (isset($config->showtype)) ? $config->showtype : 0;
     $data->filterfiles = $config->filterfiles;
 
-    return resource_add_instance($data, null);
+    return resourceduedate_add_instance($data, null);
 }

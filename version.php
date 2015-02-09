@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015020902;       // The current module version (Date: YYYYMMDDXX)
-$plugin->requires  = 20150202;    // Requires this Moodle version
+$plugin->version   = 2015020905;       // The current module version (Date: YYYYMMDDXX)
+$plugin->requires  = 2014110400;    // Requires this Moodle version
 $plugin->component = 'mod_resourceduedate'; // Full name of the plugin (used for diagnostics)
 $plugin->maturity  = MATURITY_ALPHA;
 $plugin->release   = 'v1.0';

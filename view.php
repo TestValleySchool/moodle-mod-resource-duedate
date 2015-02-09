@@ -24,7 +24,7 @@
  */
 
 require('../../config.php');
-require_once($CFG->dirroot.'/mod/resource/locallib.php');
+require_once($CFG->dirroot.'/mod/resourceduedate/locallib.php');
 require_once($CFG->libdir.'/completionlib.php');
 
 $id       = optional_param('id', 0, PARAM_INT); // Course Module ID
@@ -32,51 +32,51 @@ $r        = optional_param('r', 0, PARAM_INT);  // Resource instance ID
 $redirect = optional_param('redirect', 0, PARAM_BOOL);
 
 if ($r) {
-    if (!$resource = $DB->get_record('resource', array('id'=>$r))) {
-        resource_redirect_if_migrated($r, 0);
+    if (!$resource = $DB->get_record('resourceduedate', array('id'=>$r))) {
+        resourceduedate_redirect_if_migrated($r, 0);
         print_error('invalidaccessparameter');
     }
-    $cm = get_coursemodule_from_instance('resource', $resource->id, $resource->course, false, MUST_EXIST);
+    $cm = get_coursemodule_from_instance('resourceduedate', $resource->id, $resource->course, false, MUST_EXIST);
 
 } else {
-    if (!$cm = get_coursemodule_from_id('resource', $id)) {
-        resource_redirect_if_migrated(0, $id);
+    if (!$cm = get_coursemodule_from_id('resourceduedate', $id)) {
+        resourceduedate_redirect_if_migrated(0, $id);
         print_error('invalidcoursemodule');
     }
-    $resource = $DB->get_record('resource', array('id'=>$cm->instance), '*', MUST_EXIST);
+    $resource = $DB->get_record('resourceduedate', array('id'=>$cm->instance), '*', MUST_EXIST);
 }
 
 $course = $DB->get_record('course', array('id'=>$cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
-require_capability('mod/resource:view', $context);
+require_capability('mod/resourceduedate:view', $context);
 
 $params = array(
     'context' => $context,
     'objectid' => $resource->id
 );
-$event = \mod_resource\event\course_module_viewed::create($params);
+$event = \mod_resourceduedate\event\course_module_viewed::create($params);
 $event->add_record_snapshot('course_modules', $cm);
 $event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('resource', $resource);
+$event->add_record_snapshot('resourceduedate', $resource);
 $event->trigger();
 
 // Update 'viewed' state if required by completion system
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
-$PAGE->set_url('/mod/resource/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/resourceduedate/view.php', array('id' => $cm->id));
 
 if ($resource->tobemigrated) {
-    resource_print_tobemigrated($resource, $cm, $course);
+    resourceduedate_print_tobemigrated($resource, $cm, $course);
     die;
 }
 
 $fs = get_file_storage();
-$files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+$files = $fs->get_area_files($context->id, 'mod_resourceduedate', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
 if (count($files) < 1) {
-    resource_print_filenotfound($resource, $cm, $course);
+    resourceduedate_print_filenotfound($resource, $cm, $course);
     die;
 } else {
     $file = reset($files);
@@ -84,7 +84,7 @@ if (count($files) < 1) {
 }
 
 $resource->mainfile = $file->get_filename();
-$displaytype = resource_get_final_display_type($resource);
+$displaytype = resourceduedate_get_final_display_type($resource);
 if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD) {
     // For 'open' and 'download' links, we always redirect to the content - except
     // if the user just chose 'save and display' from the form then that would be
@@ -97,20 +97,20 @@ if ($displaytype == RESOURCELIB_DISPLAY_OPEN || $displaytype == RESOURCELIB_DISP
 if ($redirect) {
     // coming from course page or url index page
     // this redirect trick solves caching problems when tracking views ;-)
-    $path = '/'.$context->id.'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$context->id.'/mod_resourceduedate/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
     $fullurl = moodle_url::make_file_url('/pluginfile.php', $path, $displaytype == RESOURCELIB_DISPLAY_DOWNLOAD);
     redirect($fullurl);
 }
 
 switch ($displaytype) {
     case RESOURCELIB_DISPLAY_EMBED:
-        resource_display_embed($resource, $cm, $course, $file);
+        resourceduedate_display_embed($resource, $cm, $course, $file);
         break;
     case RESOURCELIB_DISPLAY_FRAME:
-        resource_display_frame($resource, $cm, $course, $file);
+        resourceduedate_display_frame($resource, $cm, $course, $file);
         break;
     default:
-        resource_print_workaround($resource, $cm, $course, $file);
+        resourceduedate_print_workaround($resource, $cm, $course, $file);
         break;
 }
 

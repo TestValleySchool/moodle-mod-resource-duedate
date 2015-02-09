@@ -18,7 +18,7 @@
 /**
  * Resource configuration form
  *
- * @package    mod_resource
+ * @package    mod_resourceduedate
  * @copyright  2009 Petr Skoda  {@link http://skodak.org}
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +29,7 @@ require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/mod/resource/locallib.php');
 require_once($CFG->libdir.'/filelib.php');
 
-class mod_resource_duedate_mod_form extends moodleform_mod {
+class mod_resourceduedate_mod_form extends moodleform_mod {
     function definition() {
         global $CFG, $DB;
         $mform =& $this->_form;
@@ -152,7 +152,7 @@ class mod_resource_duedate_mod_form extends moodleform_mod {
     function data_preprocessing(&$default_values) {
         if ($this->current->instance and !$this->current->tobemigrated) {
             $draftitemid = file_get_submitted_draft_itemid('files');
-            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_resource', 'content', 0, array('subdirs'=>true));
+            file_prepare_draft_area($draftitemid, $this->context->id, 'mod_resourceduedate', 'content', 0, array('subdirs'=>true));
             $default_values['files'] = $draftitemid;
         }
         if (!empty($default_values['displayoptions'])) {

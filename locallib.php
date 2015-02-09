@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/filelib.php");
 require_once("$CFG->libdir/resourcelib.php");
-require_once("$CFG->dirroot/mod/resource/lib.php");
+require_once("$CFG->dirroot/mod/resourceduedate/lib.php");
 
 /**
  * Redirected to migrated resource if needed,
@@ -36,13 +36,13 @@ require_once("$CFG->dirroot/mod/resource/lib.php");
  * @param int $cmid
  * @return void
  */
-function resource_redirect_if_migrated($oldid, $cmid) {
+function resourceduedate_redirect_if_migrated($oldid, $cmid) {
     global $DB, $CFG;
 
     if ($oldid) {
-        $old = $DB->get_record('resource_old', array('oldid'=>$oldid));
+        $old = $DB->get_record('resourceduedate_old', array('oldid'=>$oldid));
     } else {
-        $old = $DB->get_record('resource_old', array('cmid'=>$cmid));
+        $old = $DB->get_record('resourceduedate_old', array('cmid'=>$cmid));
     }
 
     if (!$old) {
@@ -60,10 +60,10 @@ function resource_redirect_if_migrated($oldid, $cmid) {
  * @param stored_file $file main file
  * @return does not return
  */
-function resource_display_embed($resource, $cm, $course, $file) {
+function resourceduedate_display_embed($resource, $cm, $course, $file) {
     global $CFG, $PAGE, $OUTPUT;
 
-    $clicktoopen = resource_get_clicktoopen($file, $resource->revision);
+    $clicktoopen = resourceduedate_get_clicktoopen($file, $resource->revision);
 
     $context = context_module::instance($cm->id);
     $path = '/'.$context->id.'/mod_resourceduedate/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
@@ -97,12 +97,12 @@ function resource_display_embed($resource, $cm, $course, $file) {
         $code = resourcelib_embed_general($fullurl, $title, $clicktoopen, $mimetype);
     }
 
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course);
+    resourceduedate_print_header($resource, $cm, $course);
+    resourceduedate_print_heading($resource, $cm, $course);
 
     echo $code;
 
-    resource_print_intro($resource, $cm, $course);
+    resourceduedate_print_intro($resource, $cm, $course);
 
     echo $OUTPUT->footer();
     die;
@@ -116,23 +116,23 @@ function resource_display_embed($resource, $cm, $course, $file) {
  * @param stored_file $file main file
  * @return does not return
  */
-function resource_display_frame($resource, $cm, $course, $file) {
+function resourceduedate_display_frame($resource, $cm, $course, $file) {
     global $PAGE, $OUTPUT, $CFG;
 
     $frame = optional_param('frameset', 'main', PARAM_ALPHA);
 
     if ($frame === 'top') {
         $PAGE->set_pagelayout('frametop');
-        resource_print_header($resource, $cm, $course);
-        resource_print_heading($resource, $cm, $course);
-        resource_print_intro($resource, $cm, $course);
+        resourceduedate_print_header($resource, $cm, $course);
+        resourceduedate_print_heading($resource, $cm, $course);
+        resourceduedate_print_intro($resource, $cm, $course);
         echo $OUTPUT->footer();
         die;
 
     } else {
         $config = get_config('resource');
         $context = context_module::instance($cm->id);
-        $path = '/'.$context->id.'/mod_resource_date/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+        $path = '/'.$context->id.'/mod_resourceduedate_date/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
         $fileurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
         $navurl = "$CFG->wwwroot/mod/resource/view.php?id=$cm->id&amp;frameset=top";
         $title = strip_tags(format_string($course->shortname.': '.$resource->name));
@@ -164,11 +164,11 @@ EOF;
 /**
  * Internal function - create click to open text with link.
  */
-function resource_get_clicktoopen($file, $revision, $extra='') {
+function resourceduedate_get_clicktoopen($file, $revision, $extra='') {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resource_date/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_resourceduedate_date/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
 
     $string = get_string('clicktoopen2', 'resource', "<a href=\"$fullurl\" $extra>$filename</a>");
@@ -179,11 +179,11 @@ function resource_get_clicktoopen($file, $revision, $extra='') {
 /**
  * Internal function - create click to open text with link.
  */
-function resource_get_clicktodownload($file, $revision) {
+function resourceduedate_get_clicktodownload($file, $revision) {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resource_date/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_resourceduedate_date/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, true);
 
     $string = get_string('clicktodownload', 'resource', "<a href=\"$fullurl\">$filename</a>");
@@ -199,16 +199,16 @@ function resource_get_clicktodownload($file, $revision) {
  * @param stored_file $file main file
  * @return does not return
  */
-function resource_print_workaround($resource, $cm, $course, $file) {
+function resourceduedate_print_workaround($resource, $cm, $course, $file) {
     global $CFG, $OUTPUT;
 
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course, true);
-    resource_print_intro($resource, $cm, $course, true);
+    resourceduedate_print_header($resource, $cm, $course);
+    resourceduedate_print_heading($resource, $cm, $course, true);
+    resourceduedate_print_intro($resource, $cm, $course, true);
 
     $resource->mainfile = $file->get_filename();
     echo '<div class="resourceworkaround">';
-    switch (resource_get_final_display_type($resource)) {
+    switch (resourceduedate_get_final_display_type($resource)) {
         case RESOURCELIB_DISPLAY_POPUP:
             $path = '/'.$file->get_contextid().'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
@@ -217,21 +217,21 @@ function resource_print_workaround($resource, $cm, $course, $file) {
             $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
             $wh = "width=$width,height=$height,toolbar=no,location=no,menubar=no,copyhistory=no,status=no,directories=no,scrollbars=yes,resizable=yes";
             $extra = "onclick=\"window.open('$fullurl', '', '$wh'); return false;\"";
-            echo resource_get_clicktoopen($file, $resource->revision, $extra);
+            echo resourceduedate_get_clicktoopen($file, $resource->revision, $extra);
             break;
 
         case RESOURCELIB_DISPLAY_NEW:
             $extra = 'onclick="this.target=\'_blank\'"';
-            echo resource_get_clicktoopen($file, $resource->revision, $extra);
+            echo resourceduedate_get_clicktoopen($file, $resource->revision, $extra);
             break;
 
         case RESOURCELIB_DISPLAY_DOWNLOAD:
-            echo resource_get_clicktodownload($file, $resource->revision);
+            echo resourceduedate_get_clicktodownload($file, $resource->revision);
             break;
 
         case RESOURCELIB_DISPLAY_OPEN:
         default:
-            echo resource_get_clicktoopen($file, $resource->revision);
+            echo resourceduedate_get_clicktoopen($file, $resource->revision);
             break;
     }
     echo '</div>';
@@ -247,7 +247,7 @@ function resource_print_workaround($resource, $cm, $course, $file) {
  * @param object $course
  * @return void
  */
-function resource_print_header($resource, $cm, $course) {
+function resourceduedate_print_header($resource, $cm, $course) {
     global $PAGE, $OUTPUT;
 
     $PAGE->set_title($course->shortname.': '.$resource->name);
@@ -265,7 +265,7 @@ function resource_print_header($resource, $cm, $course) {
  * @param bool $notused This variable is no longer used
  * @return void
  */
-function resource_print_heading($resource, $cm, $course, $notused = false) {
+function resourceduedate_print_heading($resource, $cm, $course, $notused = false) {
     global $OUTPUT;
     echo $OUTPUT->heading(format_string($resource->name), 2);
 }
@@ -280,7 +280,7 @@ function resource_print_heading($resource, $cm, $course, $notused = false) {
  * @param object $cm Course-module table row
  * @return string Size and type or empty string if show options are not enabled
  */
-function resource_get_optional_details($resource, $cm) {
+function resourceduedate_get_optional_details($resource, $cm) {
     global $DB;
 
     $details = '';
@@ -336,12 +336,12 @@ function resource_get_optional_details($resource, $cm) {
  * @param bool $ignoresettings print even if not specified in modedit
  * @return void
  */
-function resource_print_intro($resource, $cm, $course, $ignoresettings=false) {
+function resourceduedate_print_intro($resource, $cm, $course, $ignoresettings=false) {
     global $OUTPUT;
 
     $options = empty($resource->displayoptions) ? array() : unserialize($resource->displayoptions);
 
-    $extraintro = resource_get_optional_details($resource, $cm);
+    $extraintro = resourceduedate_get_optional_details($resource, $cm);
     if ($extraintro) {
         // Put a paragaph tag around the details
         $extraintro = html_writer::tag('p', $extraintro, array('class' => 'resourcedetails'));
@@ -367,14 +367,14 @@ function resource_print_intro($resource, $cm, $course, $ignoresettings=false) {
  * @param object $course
  * @return void, does not return
  */
-function resource_print_tobemigrated($resource, $cm, $course) {
+function resourceduedate_print_tobemigrated($resource, $cm, $course) {
     global $DB, $OUTPUT;
 
-    $resource_old = $DB->get_record('resource_old', array('oldid'=>$resource->id));
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course);
-    resource_print_intro($resource, $cm, $course);
-    echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resource_old->type));
+    $resourceduedate_old = $DB->get_record('resourceduedate_old', array('oldid'=>$resource->id));
+    resourceduedate_print_header($resource, $cm, $course);
+    resourceduedate_print_heading($resource, $cm, $course);
+    resourceduedate_print_intro($resource, $cm, $course);
+    echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resourceduedate_old->type));
     echo $OUTPUT->footer();
     die;
 }
@@ -386,15 +386,15 @@ function resource_print_tobemigrated($resource, $cm, $course) {
  * @param object $course
  * @return void, does not return
  */
-function resource_print_filenotfound($resource, $cm, $course) {
+function resourceduedate_print_filenotfound($resource, $cm, $course) {
     global $DB, $OUTPUT;
 
-    $resource_old = $DB->get_record('resource_old', array('oldid'=>$resource->id));
-    resource_print_header($resource, $cm, $course);
-    resource_print_heading($resource, $cm, $course);
-    resource_print_intro($resource, $cm, $course);
-    if ($resource_old) {
-        echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resource_old->type));
+    $resourceduedate_old = $DB->get_record('resourceduedate_old', array('oldid'=>$resource->id));
+    resourceduedate_print_header($resource, $cm, $course);
+    resourceduedate_print_heading($resource, $cm, $course);
+    resourceduedate_print_intro($resource, $cm, $course);
+    if ($resourceduedate_old) {
+        echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resourceduedate_old->type));
     } else {
         echo $OUTPUT->notification(get_string('filenotfound', 'resource'));
     }
@@ -407,7 +407,7 @@ function resource_print_filenotfound($resource, $cm, $course) {
  * @param object $resource
  * @return int display type constant
  */
-function resource_get_final_display_type($resource) {
+function resourceduedate_get_final_display_type($resource) {
     global $CFG, $PAGE;
 
     if ($resource->display != RESOURCELIB_DISPLAY_AUTO) {
@@ -434,7 +434,7 @@ function resource_get_final_display_type($resource) {
 /**
  * File browsing support class
  */
-class resource_content_file_info extends file_info_stored {
+class resourceduedate_content_file_info extends file_info_stored {
     public function get_parent() {
         if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
             return $this->browser->get_file_info($this->context);
@@ -449,7 +449,7 @@ class resource_content_file_info extends file_info_stored {
     }
 }
 
-function resource_set_mainfile($data) {
+function resourceduedate_set_mainfile($data) {
     global $DB;
     $fs = get_file_storage();
     $cmid = $data->coursemodule;
