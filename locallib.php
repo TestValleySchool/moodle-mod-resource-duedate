@@ -466,3 +466,5 @@ function resourceduedate_set_mainfile($data) {
         file_set_sortorder($context->id, 'mod_resourceduedate', 'content', 0, $file->get_filepath(), $file->get_filename(), 1);
     }
 }
+
+

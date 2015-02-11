@@ -102,6 +102,7 @@ function resourceduedate_add_instance($data, $mform) {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
     require_once("$CFG->dirroot/mod/resourceduedate/locallib.php");
+    require_once( $CFG->dirroot . '/calendar/lib.php');
     $cmid = $data->coursemodule;
     $data->timemodified = time();
 
@@ -109,9 +110,15 @@ function resourceduedate_add_instance($data, $mform) {
 
     $data->id = $DB->insert_record('resourceduedate', $data);
 
+    // add course event to calendar
+    
+
     // we need to use context now, so we need to make sure all needed info is already in db
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
     resourceduedate_set_mainfile($data);
+
+    resourceduedate_update_calendar( $cmid );
+
     return $data->id;
 }
 
@@ -132,6 +139,9 @@ function resourceduedate_update_instance($data, $mform) {
 
     $DB->update_record('resourceduedate', $data);
     resourceduedate_set_mainfile($data);
+
+    resourceduedate_update_calendar( $data->id );
+
     return true;
 }
 
@@ -177,6 +187,62 @@ function resourceduedate_delete_instance($id) {
     $DB->delete_records('resourceduedate', array('id'=>$resource->id));
 
     return true;
+}
+
+/**
+ * Update the calendar entries for this resource due date item.
+ * 
+ * @param int $coursemoduleid - Required to pass this is because it might
+ *                              not exist in the database yet.
+ * @return bool
+ */
+function resourceduedate_update_calendar($coursemoduleid) {
+	global $DB, $CFG;
+	require_once($CFG->dirroot.'/calendar/lib.php');
+
+	// get instance
+	$params = array( 'id' => $coursemoduleid );
+	$instance = $DB->get_record( 'resourceduedate', $params, '*', MUST_EXIST );
+
+	var_dump($params);
+
+
+	if ( ! $instance ) {
+		throw new coding_exception( 'Unable to get the resourceduedate instance in order to update the calendar event attached to it.' );
+	}
+
+	if ( $instance->duedate ) {
+		$event = new stdClass();
+
+		$params = array( 'modulename' => 'resourceduedate', 'instance' => $instance->id );
+		$event->id = $DB->get_field('event', 'id', $params); // might return false, in which case we add it to the DB later
+
+		$event->name = $instance->name;
+		$event->timestart = $instance->duedate;
+		
+		// links?? TODO
+
+		if ( $event->id ) {
+			$calevent = calendar_event::load($event->id);
+			$calevent->update( $event );
+		}
+		else {
+			unset( $event->id );
+			$event->courseid     = $instance->course;
+			$event->groupid      = 0;
+			$event->userid       = 0;
+			$event->modulename   = 'resourceduedate';
+			$event->instance     = $instance->id;
+			$event->eventtype    = 'due';
+			$event->timeduration = 0;
+			calendar_event::create( $event );
+		}
+
+	}
+	else {	// no due date, should not be possible
+		throw new coding_exception( 'Could not get the due date on this instance of resourceduedate.' );
+	}
+	
 }
 
 /**
