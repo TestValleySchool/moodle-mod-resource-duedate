@@ -117,7 +117,7 @@ function resourceduedate_add_instance($data, $mform) {
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
     resourceduedate_set_mainfile($data);
 
-    resourceduedate_update_calendar( $cmid );
+    resourceduedate_update_calendar( $data->id );
 
     return $data->id;
 }
@@ -176,11 +176,15 @@ function resourceduedate_set_display_options($data) {
  * @return bool true
  */
 function resourceduedate_delete_instance($id) {
-    global $DB;
+    global $DB, $CFG;
+    require_once( $CFG->dirroot . '/calendar/lib.php' );
 
     if (!$resource = $DB->get_record('resourceduedate', array('id'=>$id))) {
         return false;
     }
+
+    // delete associated calendar event
+    $DB->delete_records('event', array('modulename' => 'resourceduedate', 'instance' => $id ) );   
 
     // note: all context files are deleted automatically
 
@@ -199,12 +203,11 @@ function resourceduedate_delete_instance($id) {
 function resourceduedate_update_calendar($coursemoduleid) {
 	global $DB, $CFG;
 	require_once($CFG->dirroot.'/calendar/lib.php');
+	require_once($CFG->dirroot.'/lib/filelib.php');
 
 	// get instance
 	$params = array( 'id' => $coursemoduleid );
 	$instance = $DB->get_record( 'resourceduedate', $params, '*', MUST_EXIST );
-
-	var_dump($params);
 
 
 	if ( ! $instance ) {
@@ -220,7 +223,16 @@ function resourceduedate_update_calendar($coursemoduleid) {
 		$event->name = $instance->name;
 		$event->timestart = $instance->duedate;
 		
-		// links?? TODO
+		// links to files
+		$intro = $instance->intro;
+		if ( $draftid = file_get_submitted_draft_itemid('introeditor')) {
+			$intro = file_rewrite_urls_to_pluginfile($intro, $draftid);
+		}
+		$intro = strip_pluginfile_content($intro);
+		$event->description = array(
+			'text'      =>  $intro,
+			'format'    =>  $instance->introformat
+		);
 
 		if ( $event->id ) {
 			$calevent = calendar_event::load($event->id);
