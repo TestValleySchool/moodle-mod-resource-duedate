@@ -117,7 +117,7 @@ function resourceduedate_add_instance($data, $mform) {
     $DB->set_field('course_modules', 'instance', $data->id, array('id'=>$cmid));
     resourceduedate_set_mainfile($data);
 
-    resourceduedate_update_calendar( $data->id );
+    resourceduedate_update_calendar( $data->id, $cmid );
 
     return $data->id;
 }
@@ -140,7 +140,7 @@ function resourceduedate_update_instance($data, $mform) {
     $DB->update_record('resourceduedate', $data);
     resourceduedate_set_mainfile($data);
 
-    resourceduedate_update_calendar( $data->id );
+    resourceduedate_update_calendar( $data->id, $data->coursemodule );
 
     return true;
 }
@@ -200,13 +200,13 @@ function resourceduedate_delete_instance($id) {
  *                              not exist in the database yet.
  * @return bool
  */
-function resourceduedate_update_calendar($coursemoduleid) {
+function resourceduedate_update_calendar($id, $cmid) {
 	global $DB, $CFG;
 	require_once($CFG->dirroot.'/calendar/lib.php');
 	require_once($CFG->dirroot.'/lib/filelib.php');
 
 	// get instance
-	$params = array( 'id' => $coursemoduleid );
+	$params = array( 'id' => $id );
 	$instance = $DB->get_record( 'resourceduedate', $params, '*', MUST_EXIST );
 
 
@@ -229,6 +229,14 @@ function resourceduedate_update_calendar($coursemoduleid) {
 			$intro = file_rewrite_urls_to_pluginfile($intro, $draftid);
 		}
 		$intro = strip_pluginfile_content($intro);
+
+		// add manual link
+		$intro .= html_writer::link(
+				new moodle_url( '/mod/resourceduedate/view.php', array( 'id' => $cmid ) ),
+				get_string( 'view_resourceduedate_link', 'resourceduedate' ),
+				array('class', 'mod_resourceduedate_file_link' )
+			);
+
 		$event->description = array(
 			'text'      =>  $intro,
 			'format'    =>  $instance->introformat
