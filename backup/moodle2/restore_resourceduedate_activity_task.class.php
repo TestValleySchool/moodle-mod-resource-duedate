@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/mod/resourceduedate/backup/moodle2/restore_resour
  * resource restore task that provides all the settings and steps to perform one
  * complete restore of the activity
  */
-class restore_resource_activity_task extends restore_activity_task {
+class restore_resourceduedate_activity_task extends restore_activity_task {
 
     /**
      * Define (add) particular settings this activity can have
