@@ -26,12 +26,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot . '/mod/resource/backup/moodle2/backup_resource_stepslib.php');
+require_once($CFG->dirroot . '/mod/resourceduedate/backup/moodle2/backup_resourceduedate_stepslib.php');
 
 /**
  * Provides the steps to perform one complete backup of the Resource instance
  */
-class backup_resource_activity_task extends backup_activity_task {
+class backup_resourceduedate_activity_task extends backup_activity_task {
 
     /**
      * @param bool $resourceoldexists True if there are records in the resource_old table.
@@ -48,7 +48,7 @@ class backup_resource_activity_task extends backup_activity_task {
      * Defines a backup step to store the instance data in the resource.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_resource_activity_structure_step('resource_structure', 'resource.xml'));
+        $this->add_step(new backup_resource_activity_structure_step('resourceduedate_structure', 'resourceduedate.xml'));
     }
 
     /**
@@ -63,13 +63,13 @@ class backup_resource_activity_task extends backup_activity_task {
         $base = preg_quote($CFG->wwwroot,"/");
 
         // Link to the list of resources.
-        $search="/(".$base."\/mod\/resource\/index.php\?id\=)([0-9]+)/";
+        $search="/(".$base."\/mod\/resourceduedate\/index.php\?id\=)([0-9]+)/";
         $content= preg_replace($search, '$@RESOURCEINDEX*$2@$', $content);
 
         // Link to resource view by moduleid.
-        $search = "/(".$base."\/mod\/resource\/view.php\?id\=)([0-9]+)/";
+        $search = "/(".$base."\/mod\/resourceduedate\/view.php\?id\=)([0-9]+)/";
         // Link to resource view by recordid
-        $search2 = "/(".$base."\/mod\/resource\/view.php\?r\=)([0-9]+)/";
+        $search2 = "/(".$base."\/mod\/resourceduedate\/view.php\?r\=)([0-9]+)/";
 
         // Check whether there are contents in the resource old table.
         if (static::$resourceoldexists === null) {

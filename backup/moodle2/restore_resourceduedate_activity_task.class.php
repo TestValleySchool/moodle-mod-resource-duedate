@@ -16,15 +16,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    mod_resource
+ * @package    mod_resourceduedate
  * @subpackage backup-moodle2
- * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright 2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}, 2015 Test Valley School
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/resource/backup/moodle2/restore_resource_stepslib.php'); // Because it exists (must)
+require_once($CFG->dirroot . '/mod/resourceduedate/backup/moodle2/restore_resourceduedate_stepslib.php'); // Because it exists (must)
 
 /**
  * resource restore task that provides all the settings and steps to perform one
@@ -44,7 +44,7 @@ class restore_resource_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // Choice only has one structure step
-        $this->add_step(new restore_resource_activity_structure_step('resource_structure', 'resource.xml'));
+        $this->add_step(new restore_resource_activity_structure_step('resourceduedate_structure', 'resourceduedate.xml'));
     }
 
     /**
@@ -54,7 +54,7 @@ class restore_resource_activity_task extends restore_activity_task {
     static public function define_decode_contents() {
         $contents = array();
 
-        $contents[] = new restore_decode_content('resource', array('intro'), 'resource');
+        $contents[] = new restore_decode_content('resourceduedate', array('intro'), 'resourceduedate');
 
         return $contents;
     }
@@ -66,8 +66,8 @@ class restore_resource_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('RESOURCEVIEWBYID', '/mod/resource/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('RESOURCEINDEX', '/mod/resource/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('RESOURCEVIEWBYID', '/mod/resourceduedate/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('RESOURCEINDEX', '/mod/resourceduedate/index.php?id=$1', 'course');
 
         return $rules;
 
@@ -82,9 +82,9 @@ class restore_resource_activity_task extends restore_activity_task {
     static public function define_restore_log_rules() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('resource', 'add', 'view.php?id={course_module}', '{resource}');
-        $rules[] = new restore_log_rule('resource', 'update', 'view.php?id={course_module}', '{resource}');
-        $rules[] = new restore_log_rule('resource', 'view', 'view.php?id={course_module}', '{resource}');
+        $rules[] = new restore_log_rule('resourceduedate', 'add', 'view.php?id={course_module}', '{resourceduedate}');
+        $rules[] = new restore_log_rule('resourceduedate', 'update', 'view.php?id={course_module}', '{resourceduedate}');
+        $rules[] = new restore_log_rule('resourceduedate', 'view', 'view.php?id={course_module}', '{resourceduedate}');
 
         return $rules;
     }
@@ -102,7 +102,7 @@ class restore_resource_activity_task extends restore_activity_task {
     static public function define_restore_log_rules_for_course() {
         $rules = array();
 
-        $rules[] = new restore_log_rule('resource', 'view all', 'index.php?id={course}', null);
+        $rules[] = new restore_log_rule('resourceduedate', 'view all', 'index.php?id={course}', null);
 
         return $rules;
     }

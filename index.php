@@ -18,8 +18,8 @@
 /**
  * List of all resources in course
  *
- * @package    mod_resource
- * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com)
+ * @package    mod_resourceduedate
+ * @copyright  1999 onwards Martin Dougiamas (http://dougiamas.com), 2015 Test Valley School
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
