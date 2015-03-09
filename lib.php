@@ -300,7 +300,7 @@ function resourceduedate_get_coursemodule_info($coursemodule) {
         return $info;
     }
     $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
+    $files = $fs->get_area_files($context->id, 'mod_resourceduedate', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
     if (count($files) >= 1) {
         $mainfile = reset($files);
         $info->icon = file_file_icon($mainfile, 24);
@@ -310,7 +310,7 @@ function resourceduedate_get_coursemodule_info($coursemodule) {
     $display = resourceduedate_get_final_display_type($resource);
 
     if ($display == RESOURCELIB_DISPLAY_POPUP) {
-        $fullurl = "$CFG->wwwroot/mod/resource/view.php?id=$coursemodule->id&amp;redirect=1";
+        $fullurl = "$CFG->wwwroot/mod/resourceduedate/view.php?id=$coursemodule->id&amp;redirect=1";
         $options = empty($resource->displayoptions) ? array() : unserialize($resource->displayoptions);
         $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
         $height = empty($options['popupheight']) ? 450 : $options['popupheight'];
@@ -318,7 +318,7 @@ function resourceduedate_get_coursemodule_info($coursemodule) {
         $info->onclick = "window.open('$fullurl', '', '$wh'); return false;";
 
     } else if ($display == RESOURCELIB_DISPLAY_NEW) {
-        $fullurl = "$CFG->wwwroot/mod/resource/view.php?id=$coursemodule->id&amp;redirect=1";
+        $fullurl = "$CFG->wwwroot/mod/resourceduedate/view.php?id=$coursemodule->id&amp;redirect=1";
         $info->onclick = "window.open('$fullurl'); return false;";
 
     }
@@ -390,15 +390,15 @@ function resourceduedate_get_file_info($browser, $areas, $course, $cm, $context,
         $filename = is_null($filename) ? '.' : $filename;
 
         $urlbase = $CFG->wwwroot.'/pluginfile.php';
-        if (!$storedfile = $fs->get_file($context->id, 'mod_resource', 'content', 0, $filepath, $filename)) {
+        if (!$storedfile = $fs->get_file($context->id, 'mod_resourceduedate', 'content', 0, $filepath, $filename)) {
             if ($filepath === '/' and $filename === '.') {
-                $storedfile = new virtual_root_file($context->id, 'mod_resource', 'content', 0);
+                $storedfile = new virtual_root_file($context->id, 'mod_resourceduedate', 'content', 0);
             } else {
                 // not found
                 return null;
             }
         }
-        require_once("$CFG->dirroot/mod/resource/locallib.php");
+        require_once("$CFG->dirroot/mod/resourceduedate/locallib.php");
         return new resourceduedate_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
     }
 
@@ -461,7 +461,7 @@ function resourceduedate_pluginfile($course, $cm, $context, $filearea, $args, $f
             if ($resource->legacyfiles != RESOURCELIB_LEGACYFILES_ACTIVE) {
                 return false;
             }
-            if (!$file = resourcelib_try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_resource', 'content', 0)) {
+            if (!$file = resourcelib_try_file_migration('/'.$relativepath, $cm->id, $cm->course, 'mod_resourceduedate', 'content', 0)) {
                 return false;
             }
             // file migrate - update flag
@@ -553,7 +553,7 @@ function resourceduedate_dndupload_handle($uploadinfo) {
     $data->files = $uploadinfo->draftitemid;
 
     // Set the display options to the site defaults.
-    $config = get_config('resource');
+    $config = get_config('resourceduedate');
     $data->display = $config->display;
     $data->popupheight = $config->popupheight;
     $data->popupwidth = $config->popupwidth;

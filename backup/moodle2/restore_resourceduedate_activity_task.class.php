@@ -44,7 +44,7 @@ class restore_resourceduedate_activity_task extends restore_activity_task {
      */
     protected function define_my_steps() {
         // Choice only has one structure step
-        $this->add_step(new restore_resource_activity_structure_step('resourceduedate_structure', 'resourceduedate.xml'));
+        $this->add_step(new restore_resourceduedate_activity_structure_step('resourceduedate_structure', 'resourceduedate.xml'));
     }
 
     /**

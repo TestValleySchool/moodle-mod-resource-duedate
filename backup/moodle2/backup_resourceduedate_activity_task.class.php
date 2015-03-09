@@ -48,7 +48,7 @@ class backup_resourceduedate_activity_task extends backup_activity_task {
      * Defines a backup step to store the instance data in the resource.xml file
      */
     protected function define_my_steps() {
-        $this->add_step(new backup_resource_activity_structure_step('resourceduedate_structure', 'resourceduedate.xml'));
+        $this->add_step(new backup_resourceduedate_activity_structure_step('resourceduedate_structure', 'resourceduedate.xml'));
     }
 
     /**

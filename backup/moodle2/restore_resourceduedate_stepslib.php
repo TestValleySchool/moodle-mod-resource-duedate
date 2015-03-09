@@ -40,7 +40,7 @@ class restore_resourceduedate_activity_structure_step extends restore_activity_s
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_resource($data) {
+    protected function process_resourceduedate($data) {
         global $DB;
 
         $data = (object)$data;
