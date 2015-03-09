@@ -303,7 +303,7 @@ function resourceduedate_get_coursemodule_info($coursemodule) {
     $files = $fs->get_area_files($context->id, 'mod_resourceduedate', 'content', 0, 'sortorder DESC, id ASC', false); // TODO: this is not very efficient!!
     if (count($files) >= 1) {
         $mainfile = reset($files);
-        $info->icon = file_file_icon($mainfile, 24);
+        //$info->icon = file_file_icon($mainfile, 24);
         $resource->mainfile = $mainfile->get_filename();
     }
 
