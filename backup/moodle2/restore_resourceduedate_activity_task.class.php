@@ -66,8 +66,8 @@ class restore_resourceduedate_activity_task extends restore_activity_task {
     static public function define_decode_rules() {
         $rules = array();
 
-        $rules[] = new restore_decode_rule('RESOURCEVIEWBYID', '/mod/resourceduedate/view.php?id=$1', 'course_module');
-        $rules[] = new restore_decode_rule('RESOURCEINDEX', '/mod/resourceduedate/index.php?id=$1', 'course');
+        $rules[] = new restore_decode_rule('RESOURCEDUEDATEVIEWBYID', '/mod/resourceduedate/view.php?id=$1', 'course_module');
+        $rules[] = new restore_decode_rule('RESOURCEDUEDATEINDEX', '/mod/resourceduedate/index.php?id=$1', 'course');
 
         return $rules;
 

@@ -20,7 +20,7 @@
  *
  * @package     mod_resource
  * @category    backup
- * @copyright   2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @copyright   2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}, 2015 Test Valley School
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -64,7 +64,7 @@ class backup_resourceduedate_activity_task extends backup_activity_task {
 
         // Link to the list of resources.
         $search="/(".$base."\/mod\/resourceduedate\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@RESOURCEINDEX*$2@$', $content);
+        $content= preg_replace($search, '$@RESOURCEDUEDATEINDEX*$2@$', $content);
 
         // Link to resource view by moduleid.
         $search = "/(".$base."\/mod\/resourceduedate\/view.php\?id\=)([0-9]+)/";
@@ -94,7 +94,7 @@ class backup_resourceduedate_activity_task extends backup_activity_task {
                         $replace = '$@' . strtoupper($oldrecs[$cmid]->newmodule) . 'VIEWBYID*' . $cmid . '@$';
                     } else {
                         // Not in the resource old table, don't rewrite
-                        $replace = '$@RESOURCEVIEWBYID*'.$cmid.'@$';
+                        $replace = '$@RESOURCEDUEDATEVIEWBYID*'.$cmid.'@$';
                     }
                     $content = str_replace($matches[0][$i], $replace, $content);
                 }
@@ -120,7 +120,7 @@ class backup_resourceduedate_activity_task extends backup_activity_task {
                 }
             }
         } else {
-            $content = preg_replace($search, '$@RESOURCEVIEWBYID*$2@$', $content);
+            $content = preg_replace($search, '$@RESOURCEDUEDATEVIEWBYID*$2@$', $content);
         }
         return $content;
     }
