@@ -99,4 +99,4 @@ If there are multiple files in this resource, the start file type is displayed.
 
 If the file type is not known to the system, it will not display.';
 
-$string['view_resourceduedate_link'] = 'View HLT File';
+$string['view_resourceduedate_link'] = 'Access HLT';

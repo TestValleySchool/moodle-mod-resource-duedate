@@ -231,11 +231,11 @@ function resourceduedate_update_calendar($id, $cmid) {
 		$intro = strip_pluginfile_content($intro);
 
 		// add manual link
-		$intro .= html_writer::link(
+		$intro .= html_writer::div( html_writer::link(
 				new moodle_url( '/mod/resourceduedate/view.php', array( 'id' => $cmid ) ),
 				get_string( 'view_resourceduedate_link', 'resourceduedate' ),
-				array('class', 'mod_resourceduedate_file_link' )
-			);
+				array('class' => 'mod_resourceduedate_file_link' )
+			), 'mod_resourceduedate_file_link_container' );
 
 		$event->description = array(
 			'text'      =>  $intro,

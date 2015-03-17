@@ -132,9 +132,9 @@ function resourceduedate_display_frame($resource, $cm, $course, $file) {
     } else {
         $config = get_config('resource');
         $context = context_module::instance($cm->id);
-        $path = '/'.$context->id.'/mod_resourceduedate_date/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+        $path = '/'.$context->id.'/mod_resourceduedate/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
         $fileurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
-        $navurl = "$CFG->wwwroot/mod/resource/view.php?id=$cm->id&amp;frameset=top";
+        $navurl = "$CFG->wwwroot/mod/resourceduedate/view.php?id=$cm->id&amp;frameset=top";
         $title = strip_tags(format_string($course->shortname.': '.$resource->name));
         $framesize = $config->framesize;
         $contentframetitle = format_string($resource->name);
@@ -168,7 +168,7 @@ function resourceduedate_get_clicktoopen($file, $revision, $extra='') {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resourceduedate_date/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_resourceduedate/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
 
     $string = get_string('clicktoopen2', 'resource', "<a href=\"$fullurl\" $extra>$filename</a>");
@@ -183,7 +183,7 @@ function resourceduedate_get_clicktodownload($file, $revision) {
     global $CFG;
 
     $filename = $file->get_filename();
-    $path = '/'.$file->get_contextid().'/mod_resourceduedate_date/content/'.$revision.$file->get_filepath().$file->get_filename();
+    $path = '/'.$file->get_contextid().'/mod_resourceduedate/content/'.$revision.$file->get_filepath().$file->get_filename();
     $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, true);
 
     $string = get_string('clicktodownload', 'resource', "<a href=\"$fullurl\">$filename</a>");
@@ -210,7 +210,7 @@ function resourceduedate_print_workaround($resource, $cm, $course, $file) {
     echo '<div class="resourceworkaround">';
     switch (resourceduedate_get_final_display_type($resource)) {
         case RESOURCELIB_DISPLAY_POPUP:
-            $path = '/'.$file->get_contextid().'/mod_resource/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
+            $path = '/'.$file->get_contextid().'/mod_resourceduedate/content/'.$resource->revision.$file->get_filepath().$file->get_filename();
             $fullurl = file_encode_url($CFG->wwwroot.'/pluginfile.php', $path, false);
             $options = empty($resource->displayoptions) ? array() : unserialize($resource->displayoptions);
             $width  = empty($options['popupwidth'])  ? 620 : $options['popupwidth'];
@@ -253,7 +253,7 @@ function resourceduedate_print_header($resource, $cm, $course) {
     $PAGE->set_title($course->shortname.': '.$resource->name);
     $PAGE->set_heading($course->fullname);
     $PAGE->set_activity_record($resource);
-    $PAGE->set_button(update_module_button($cm->id, '', get_string('modulename', 'resource')));
+    $PAGE->set_button(update_module_button($cm->id, '', get_string('modulename', 'resourceduedate')));
     echo $OUTPUT->header();
 }
 
@@ -291,7 +291,7 @@ function resourceduedate_get_optional_details($resource, $cm) {
         $size = '';
         $type = '';
         $fs = get_file_storage();
-        $files = $fs->get_area_files($context->id, 'mod_resource', 'content', 0, 'sortorder DESC, id ASC', false);
+        $files = $fs->get_area_files($context->id, 'mod_resourceduedate', 'content', 0, 'sortorder DESC, id ASC', false);
         if (!empty($options['showsize']) && count($files)) {
             $sizebytes = 0;
             foreach ($files as $file) {
@@ -352,7 +352,7 @@ function resourceduedate_print_intro($resource, $cm, $course, $ignoresettings=fa
         if ($gotintro || $extraintro) {
             echo $OUTPUT->box_start('mod_introbox', 'resourceintro');
             if ($gotintro) {
-                echo format_module_intro('resource', $resource, $cm->id);
+                echo format_module_intro('resourceduedate', $resource, $cm->id);
             }
             echo $extraintro;
             echo $OUTPUT->box_end();
