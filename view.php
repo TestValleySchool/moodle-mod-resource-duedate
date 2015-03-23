@@ -33,15 +33,13 @@ $redirect = optional_param('redirect', 0, PARAM_BOOL);
 
 if ($r) {
     if (!$resource = $DB->get_record('resourceduedate', array('id'=>$r))) {
-        resourceduedate_redirect_if_migrated($r, 0);
-        print_error('invalidaccessparameter');
+	// no file uploaded, probably a file-less object
     }
     $cm = get_coursemodule_from_instance('resourceduedate', $resource->id, $resource->course, false, MUST_EXIST);
 
 } else {
     if (!$cm = get_coursemodule_from_id('resourceduedate', $id)) {
-        resourceduedate_redirect_if_migrated(0, $id);
-        print_error('invalidcoursemodule');
+	// no file uploaded, probably a file-less object
     }
     $resource = $DB->get_record('resourceduedate', array('id'=>$cm->instance), '*', MUST_EXIST);
 }

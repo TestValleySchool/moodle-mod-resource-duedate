@@ -215,48 +215,93 @@ function resourceduedate_update_calendar($id, $cmid) {
 	}
 
 	if ( $instance->duedate ) {
-		$event = new stdClass();
+		// determine the **set date** for when this object
+		$set_date = $instance->timemodified;
+		$set_date_formatted = userdate( $set_date, get_string( 'strftimedatefullshort' ) ); 
 
-		$params = array( 'modulename' => 'resourceduedate', 'instance' => $instance->id );
-		$event->id = $DB->get_field('event', 'id', $params); // might return false, in which case we add it to the DB later
+		// add the event for the **due date** of this resourceduedate item
+		$due_event = new stdClass();
 
-		$event->name = $instance->name;
-		$event->timestart = $instance->duedate;
+		$params = array( 'modulename' => 'resourceduedate', 'instance' => $instance->id, 'eventtype' => 'due' );
+		$due_event->id = $DB->get_field('event', 'id', $params); // might return false, in which case we add it to the DB later
+
+		$due_event->name = get_string( 'resourceduedate:date_due', 'resourceduedate' ) . $instance->name;
+		$due_event->timestart = $instance->duedate;
 		
+		// first, a prefix in the event showing date set and date due
+		$intro = html_writer::div( '<p><strong>' . get_string( 'resourceduedate:date_set', 'resourceduedate' ) . '</strong>'
+			 . $set_date_formatted . '</p><p><strong>' . get_string( 'resourceduedate:date_due', 'resourceduedate' ) . '</strong>'
+			 . userdate( $instance->duedate, get_string( 'strftimedatefullshort' ) ) . '</p>'
+			, 'mod_resourceduedate_metadata' ); 
+
 		// links to files
-		$intro = $instance->intro;
+		$intro .= $instance->intro;
+
+		// main 'description' content
 		if ( $draftid = file_get_submitted_draft_itemid('introeditor')) {
 			$intro = file_rewrite_urls_to_pluginfile($intro, $draftid);
 		}
+
 		$intro = strip_pluginfile_content($intro);
 
-		// add manual link
+		// add manual link to the file
 		$intro .= html_writer::div( html_writer::link(
 				new moodle_url( '/mod/resourceduedate/view.php', array( 'id' => $cmid ) ),
 				get_string( 'view_resourceduedate_link', 'resourceduedate' ),
 				array('class' => 'mod_resourceduedate_file_link' )
 			), 'mod_resourceduedate_file_link_container' );
 
-		$event->description = array(
+		$due_event->description = array(
 			'text'      =>  $intro,
 			'format'    =>  $instance->introformat
 		);
 
-		if ( $event->id ) {
-			$calevent = calendar_event::load($event->id);
-			$calevent->update( $event );
+		if ( $due_event->id ) {
+			$calevent = calendar_event::load($due_event->id);
+			$calevent->update( $due_event );
 		}
 		else {
-			unset( $event->id );
-			$event->courseid     = $instance->course;
-			$event->groupid      = 0;
-			$event->userid       = 0;
-			$event->modulename   = 'resourceduedate';
-			$event->instance     = $instance->id;
-			$event->eventtype    = 'due';
-			$event->timeduration = 0;
-			calendar_event::create( $event );
+			unset( $due_event->id );
+			$due_event->courseid     = $instance->course;
+			$due_event->groupid      = 0;
+			$due_event->userid       = 0;
+			$due_event->modulename   = 'resourceduedate';
+			$due_event->instance     = $instance->id;
+			$due_event->eventtype    = 'due';
+			$due_event->timeduration = 0;
+			calendar_event::create( $due_event );
 		}
+
+		// add the event for the **set date** of this item
+		$set_event = new stdClass();
+
+		$params = array( 'modulename' => 'resourceduedate', 'instance' => $instance->id, 'eventtype' => 'set' );
+		$set_event->id = $DB->get_field('event', 'id', $params); // might return false, in which case we add it to the DB later
+
+		$set_event->name = get_string( 'resourceduedate:date_set', 'resourceduedate' ) . $instance->name;
+		$set_event->timestart = $set_date;
+		
+		// we re-use the $intro above
+		$set_event->description = array(
+			'text'      =>  $intro,
+			'format'    =>  $instance->introformat
+		);
+
+		if ( $set_event->id ) {
+			$calevent = calendar_event::load($set_event->id);
+			$calevent->update( $set_event );
+		}
+		else {
+			unset( $set_event->id );
+			$set_event->courseid     = $instance->course;
+			$set_event->groupid      = 0;
+			$set_event->userid       = 0;
+			$set_event->modulename   = 'resourceduedate';
+			$set_event->instance     = $instance->id;
+			$set_event->eventtype    = 'set';
+			$set_event->timeduration = 0;
+			calendar_event::create( $set_event );
+		}		
 
 	}
 	else {	// no due date, should not be possible

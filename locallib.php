@@ -389,15 +389,12 @@ function resourceduedate_print_tobemigrated($resource, $cm, $course) {
 function resourceduedate_print_filenotfound($resource, $cm, $course) {
     global $DB, $OUTPUT;
 
-    $resourceduedate_old = $DB->get_record('resourceduedate_old', array('oldid'=>$resource->id));
     resourceduedate_print_header($resource, $cm, $course);
     resourceduedate_print_heading($resource, $cm, $course);
     resourceduedate_print_intro($resource, $cm, $course);
-    if ($resourceduedate_old) {
-        echo $OUTPUT->notification(get_string('notmigrated', 'resource', $resourceduedate_old->type));
-    } else {
-        echo $OUTPUT->notification(get_string('filenotfound', 'resource'));
-    }
+
+    // will print if this object is lacking a file
+
     echo $OUTPUT->footer();
     die;
 }

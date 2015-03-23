@@ -67,9 +67,9 @@ class mod_resourceduedate_mod_form extends moodleform_mod {
         $filemanager_options['maxfiles'] = -1;
         $filemanager_options['mainfile'] = true;
 
-	$mform->addElement('date_selector', 'duedate', 'Due date', array('optional'=>false));
+	$mform->addElement('date_selector', 'duedate', get_string('resourceduedate:due_date', 'resourceduedate'), array('optional'=>false));
 
-        $mform->addElement('filemanager', 'files', get_string('selectfiles'), null, $filemanager_options);
+        $mform->addElement('filemanager', 'files', get_string('selectfiles'), array( 'optional' => true ), $filemanager_options);
 
         // add legacy files flag only if used
         if (isset($this->current->legacyfiles) and $this->current->legacyfiles != RESOURCELIB_LEGACYFILES_NO) {
@@ -200,8 +200,8 @@ class mod_resourceduedate_mod_form extends moodleform_mod {
         $usercontext = context_user::instance($USER->id);
         $fs = get_file_storage();
         if (!$files = $fs->get_area_files($usercontext->id, 'user', 'draft', $data['files'], 'sortorder, id', false)) {
-            $errors['files'] = get_string('required');
-            return $errors;
+            /*$errors['files'] = get_string('required');
+            return $errors;*/
         }
         if (count($files) == 1) {
             // no need to select main file if only one picked

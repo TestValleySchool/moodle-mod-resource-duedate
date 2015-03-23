@@ -100,3 +100,6 @@ If there are multiple files in this resource, the start file type is displayed.
 If the file type is not known to the system, it will not display.';
 
 $string['view_resourceduedate_link'] = 'Access HLT';
+$string['resourceduedate:date_set'] = 'HLT Set: ';
+$string['resourceduedate:date_due'] = 'HLT Due: ';
+$string['resourceduedate:due_date'] = 'Due date';
