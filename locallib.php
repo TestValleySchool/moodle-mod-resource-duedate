@@ -391,6 +391,15 @@ function resourceduedate_print_filenotfound($resource, $cm, $course) {
 
     resourceduedate_print_header($resource, $cm, $course);
     resourceduedate_print_heading($resource, $cm, $course);
+
+    // print set and due box
+    $set_date = $resource->timemodified;
+    $set_date_formatted = userdate( $set_date, get_string( 'strftimedatefullshort' ) ); 
+    echo html_writer::div( '<p><strong>' . get_string( 'resourceduedate:date_set', 'resourceduedate' ) . '</strong>'
+	 . $set_date_formatted . '</p><p><strong>' . get_string( 'resourceduedate:date_due', 'resourceduedate' ) . '</strong>'
+	 . userdate( $resource->duedate, get_string( 'strftimedatefullshort' ) ) . '</p>'
+		, 'mod_resourceduedate_metadata' ); 
+
     resourceduedate_print_intro($resource, $cm, $course);
 
     // will print if this object is lacking a file
