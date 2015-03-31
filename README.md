@@ -7,8 +7,12 @@ These often involve a file with the homework instructions being uploaded to a co
 
 # Requirements
 
-This requires Moodle 2.8. It may work with earlier versions if you alter the requirements in `version.php`, but this, as with any other modifications, isn't supported by us! :)
+This requires Moodle 2.8. It may work with earlier versions if you alter the requirements in `version.php`, but this, as with any other modifications and the plugin itself, isn't supported by us! :)
 
 # Licence
 
-This code is licensed under the GNU General Public License version 3, or, at your option, any later version of that licence.
+This code is licensed under the GNU General Public License version 3, or, at your option, any later version of that licence. The software comes with no warranty, without even the implied warranty of merchantability or fitness for a particular purpose.
+
+# Contact
+
+If we haven't mentioned it enough already, there's no *promise* of support for this plugin, but questions and comments can be sent to [upfoldp@testvalley.hants.sch.uk](mailto:upfoldp@testvalley.hants.sch.uk).
