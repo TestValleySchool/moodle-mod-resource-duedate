@@ -5,11 +5,11 @@ We developed this module for teachers to set Home Learning Tasks (HLTs) which ar
 
 **This is now retired in favour of a submissions plugin that sets our 'set date' and 'due date', as the Assignment module now gives us the ability to upload multiple files as part of the assignment itself.**
 
-These often involve a file with the homework instructions being uploaded to a course, in addition to setting a due date. We had been using *Course Events*, but this required two steps from members of staff. With this module, a file can be uploaded and a due date set and attached to that one activity. These due dates appear in pupils' calendars.
+~~These often involve a file with the homework instructions being uploaded to a course, in addition to setting a due date. We had been using *Course Events*, but this required two steps from members of staff. With this module, a file can be uploaded and a due date set and attached to that one activity. These due dates appear in pupils' calendars.~~
 
 # Requirements
 
-This requires Moodle 2.8. It may work with earlier versions if you alter the requirements in `version.php`, but this, as with any other modifications and the plugin itself, isn't supported by us! :)
+~~This requires Moodle 2.8. It may work with earlier versions if you alter the requirements in `version.php`, but this, as with any other modifications and the plugin itself, isn't supported by us! :)~~
 
 # Licence
 
@@ -17,4 +17,4 @@ This code is licensed under the GNU General Public License version 3, or, at you
 
 # Contact
 
-If we haven't mentioned it enough already, there's no *promise* of support for this plugin, but questions and comments can be sent to [upfoldp@testvalley.hants.sch.uk](mailto:upfoldp@testvalley.hants.sch.uk).
+~~If we haven't mentioned it enough already, there's no *promise* of support for this plugin, but questions and comments can be sent to [upfoldp@testvalley.hants.sch.uk](mailto:upfoldp@testvalley.hants.sch.uk).~~
