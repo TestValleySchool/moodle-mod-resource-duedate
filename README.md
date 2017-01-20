@@ -3,6 +3,8 @@ A clone of Moodle's mod_resource ('File'), but with an additional feature to set
 
 We developed this module for teachers to set Home Learning Tasks (HLTs) which are intended to be handed in on paper, and are not suitable for the Assignment module.
 
+**This is now retired in favour of a submissions plugin that sets our 'set date' and 'due date', as the Assignment module now gives us the ability to upload multiple files as part of the assignment itself.**
+
 These often involve a file with the homework instructions being uploaded to a course, in addition to setting a due date. We had been using *Course Events*, but this required two steps from members of staff. With this module, a file can be uploaded and a due date set and attached to that one activity. These due dates appear in pupils' calendars.
 
 # Requirements
